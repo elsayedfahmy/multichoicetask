@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:task/domain/ApiService.dart';
 import 'package:task/domain/controller/auth_controller.dart';
 import 'package:task/domain/model/login_post_model.dart';
 import 'package:task/domain/model/register_post_model.dart';
 import 'package:task/domain/model/user_data.dart';
-import 'package:task/utilites/enums.dart';
 import 'package:task/utilites/route_manager.dart';
 import 'package:task/utilites/setting_manager.dart';
 

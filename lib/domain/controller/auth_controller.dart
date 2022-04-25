@@ -1,15 +1,12 @@
 
 import 'dart:convert';
 import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:task/domain/ApiService.dart';
 import 'package:task/domain/model/login_post_model.dart';
-import 'package:task/domain/model/payment_model.dart';
-import 'package:task/domain/model/payment_post_model.dart';
 import 'package:task/domain/model/register_post_model.dart';
 import 'package:task/domain/model/user_data.dart';
-import 'package:task/utilites/route_manager.dart';
-import 'package:task/utilites/setting_manager.dart';
 
 class AuthController{
   static Future< UserData?> login({required BuildContext context ,required LoginPostModel loginPostModel})async{
