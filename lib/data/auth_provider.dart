@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:task/domain/ApiService.dart';
+import 'package:task/domain/controller/auth_controller.dart';
 import 'package:task/domain/model/login_post_model.dart';
 import 'package:task/domain/model/register_post_model.dart';
 import 'package:task/domain/model/user_data.dart';
@@ -21,24 +22,10 @@ class AuthProvider with ChangeNotifier, DiagnosticableTreeMixin {
 login({required BuildContext context,required LoginPostModel loginPostModel})async{
   _isLoading=true;
   notifyListeners();
-  var result = await ApiService.callService(
-      actionType: ActionType.post, apiName: 'AccountSetting/Login', body:loginPostModel.toJson(), context: context);
-
- 
-  try{
-    // List<Role>roles=[];
-    // for(String role in result['roles'].toString().split(',')){
-    //   roles.add(getRole(role: role));
-    // }
-    if(result!=null) {
-      UserData userData= userDataFromJson(jsonEncode(result));
-      await SaveLocalData.savePrefUserInfo(userdata: userData);
-      gotoIntro(screenName: Routes.paymentView, context: context);
-    }
-  }catch(e){
-    dev.log('--------------- catch error ---------------------');
-    dev.log(e.toString());
-
+  UserData? userData= await AuthController.login(context: context,  loginPostModel: loginPostModel);
+  if(userData!=null){
+    await SaveLocalData.savePrefUserInfo(userdata: userData);
+    gotoIntro(screenName: Routes.paymentView, context: context);
   }
   _isLoading=false;
   notifyListeners();
@@ -49,21 +36,10 @@ login({required BuildContext context,required LoginPostModel loginPostModel})asy
    register({required BuildContext context,required RegisterPostModel registerPostModel})async{
      _isLoading=true;
      notifyListeners();
-     var result = await ApiService.callService(
-         actionType: ActionType.post, apiName: 'AccountSetting/Register',
-         body:registerPostModel.toJson(), context: context);
-
-
-     try{
-       if(result!=null) {
-         gotoIntro(screenName: Routes.loginView, context: context);
-         showInSnackBar(context: context,message:registerPostModel.toString().replaceAll('"', '') );
-
-       }
-     }catch(e){
-       dev.log('--------------- catch error ---------------------');
-       dev.log(e.toString());
-
+     String? message= await AuthController.register(context: context,  registerPostModel: registerPostModel);
+     if(message!=null){
+       gotoIntro(screenName: Routes.loginView, context: context);
+       showInSnackBar(context: context,message:message.replaceAll('"', '') );
      }
      _isLoading=false;
      notifyListeners();

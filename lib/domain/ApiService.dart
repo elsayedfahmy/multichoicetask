@@ -10,8 +10,7 @@ enum ActionType { get, post }
 String serviceURL='https://task.atc-servers.com/api/';
 class ApiService {
 
-  static  callService({required  ActionType? actionType, required  String?apiName,
-    required Map? body,required BuildContext context}) async {
+  static  callService({required  ActionType? actionType, required  String?apiName, required Map? body,required BuildContext context}) async {
     var apiurl =serviceURL + apiName!;
   try{
 
@@ -26,9 +25,10 @@ class ApiService {
     dev.log('--- body with post ---- :${body.toString()}');
     // dev.log('--- response ---- :$response');
     dev.log('--- response statusCode ---- :${response.statusCode.toString()}');
-    dev.log('--- response body ---- :${response.data.toString()}');
+
 
     if(response.statusCode==200){
+      dev.log('--- response body ---- :${response.data.toString()}');
       int responseCode=response.data['responseCode'];
       if(responseCode==1) {
         return response.data['dateSet'];
@@ -37,7 +37,13 @@ class ApiService {
         return null;
       }
 
-    }else{
+    }
+    else if(response.statusCode==401){
+      showInSnackBar(context: context,message:'must be login first' );
+      return null;
+    }
+
+    else{
       showInSnackBar(context: context,message:'error 500' );
       return null;
     }

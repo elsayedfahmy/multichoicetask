@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:task/domain/ApiService.dart';
+import 'package:task/domain/controller/payment_controller.dart';
 import 'package:task/domain/model/login_post_model.dart';
 import 'package:task/domain/model/month_dat_model.dart';
 import 'package:task/domain/model/payment_model.dart';
@@ -81,20 +82,8 @@ getHalaPayments({required BuildContext context,})async{
   _isLoading=true;
   notifyListeners();
   page=1;
-  PaymentPostModel _paymentPostModel=PaymentPostModel(fromDate: '$fromYear-$fromMonth-$fromDay',toDate:'$toYear-$toMonth-$toDay' ,
-      filter: Filter(pageNumber: page,pageSize: pageSize));
-  var result = await ApiService.callService(actionType: ActionType.post, apiName: 'HalaTaskFlutter/HalaPayments', body:_paymentPostModel.toJson(), context: context);
-
- 
-  try{
-    if(result!=null) {
-       halaPaymentModel= halaPaymentModelFromJson(jsonEncode(result));
-    }
-  }catch(e){
-    dev.log('--------------- catch error ---------------------');
-    dev.log(e.toString());
-
-  }
+   halaPaymentModel=await PaymentController.getHalaPayments(context: context, page: page, pageSize: pageSize,
+    fromDate:'$fromYear-$fromMonth-$fromDay',toDate:'$toYear-$toMonth-$toDay');
   _isLoading=false;
   notifyListeners();
 }
@@ -105,18 +94,9 @@ getHalaPayments({required BuildContext context,})async{
     _isLoading=true;
     notifyListeners();
     page=page+1;
-    PaymentPostModel _paymentPostModel=PaymentPostModel(fromDate:'$fromYear-$fromMonth-$fromDay',toDate:'$toYear-$toMonth-$toDay' ,
-        filter: Filter(pageNumber: page,pageSize: pageSize));
-    var result = await ApiService.callService(actionType: ActionType.post, apiName: 'HalaTaskFlutter/HalaPayments', body:_paymentPostModel.toJson(), context: context);
-
-
-    try{
-      if(result!=null) {
-        HalaPaymentModel?  newHalaPaymentModel= halaPaymentModelFromJson(jsonEncode(result));
-        // HalaPaymentModel?  newHalaPaymentModel2= newModel;
-        //  newHalaPaymentModel2.data=halaPaymentModel!.data;
-        // newHalaPaymentModel2.data!.addAll(newModel.data!);
-        // halaPaymentModel=newHalaPaymentModel2;
+      HalaPaymentModel?  newHalaPaymentModel =await PaymentController.getHalaPayments(context: context, page: page, pageSize: pageSize,
+          fromDate:'$fromYear-$fromMonth-$fromDay',toDate:'$toYear-$toMonth-$toDay');
+      if(newHalaPaymentModel!=null){
         halaPaymentModel!.pageNumber=newHalaPaymentModel.pageNumber;
         halaPaymentModel!.pageSize=newHalaPaymentModel.pageSize;
         halaPaymentModel!.firstPage=newHalaPaymentModel.firstPage;
@@ -129,13 +109,7 @@ getHalaPayments({required BuildContext context,})async{
         halaPaymentModel!.errors=newHalaPaymentModel.errors;
         halaPaymentModel!.message=newHalaPaymentModel.message;
         halaPaymentModel!.data!.addAll(newHalaPaymentModel.data!);
-
       }
-    }catch(e){
-      dev.log('--------------- catch error ---------------------');
-      dev.log(e.toString());
-
-    }
     _isLoading=false;
     notifyListeners();
   }

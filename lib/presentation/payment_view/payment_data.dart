@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:task/data/payment_provider.dart';
+import 'package:task/domain/model/user_data.dart';
 import 'package:task/utilites/color_manager.dart';
 import 'package:task/utilites/responsive_manager.dart';
+import 'package:task/utilites/setting_manager.dart';
 import 'package:task/utilites/string_manager.dart';
 import 'package:task/widgets/alerts.dart';
 import 'package:task/widgets/drop_down_button/drop_down_button_calender.dart';
@@ -26,6 +28,7 @@ class PaymentData{
     context.read<PaymentProvider>().toDay='01';
     context.read<PaymentProvider>().toMonth='05';
     context.read<PaymentProvider>().toYear='2022';
+    UserData? userData= await SaveLocalData.getUSerPrefsData();
     context.read<PaymentProvider>().getHalaPayments(context: context);
   }
 
